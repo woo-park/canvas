@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Drawing Paths</title>
+    <style media="screen">
+      body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      canvas{
+        border:1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="drawing" width="450" height="300">
+      Fallback content can go here (i.e. img element)
+      <!-- only gonna show up if canvas is not supported -->
+      <!-- the default size is 300x 150 -->
+    </canvas>
+    <script type="text/javascript">
+      const canvas = document.getElementById('drawing');
+      const context = canvas.getContext('2d');
+      // webgl or webgl2
+
+      const referenceWidth = 450;
+      const referenceHeight = 300;
+
+      // set display size (CSS pixels)
+      canvas.style.width = referenceWidth + 'px';
+      canvas.style.height = referenceHeight + 'px';
+
+      //set actual device pixel size in memory (scaled for extra pixel density)
+      let pxScale = window.devicePixelRatio;
+      console.log(pxScale);
+      canvas.width = referenceWidth * pxScale;
+      canvas.height = referenceHeight * pxScale;
+
+      context.scale(pxScale, pxScale);
+
+      let x =25;
+      let y = 25;
+
+      let spacing = 50;
+      let radius = 20;
+
+      let alpha = 1;
+      let red = 255;
+      let green = 0;
+      let blue = 255;
+
+      for(let row = 0; row < referenceHeight; row += spacing) {
+        for(let col = 0; col < referenceWidth; col += spacing){
+          context.beginPath();
+          context.ellipse(x, y, radius, radius, 0 , 0 ,2*Math.PI);
+          context.strokeStyle = 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
+          context.stroke();
+          green += 4;
+          blue -= 4;
+          x += spacing;
+        }
+        x = 25;
+        y += spacing;
+      }
+    </script>
+  </body>
+</html>

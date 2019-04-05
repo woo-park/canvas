@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      canvas{
+        border:1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="drawing" width="450" height="300">
+      Fallback content can go here (i.e. img element)
+      <!-- only gonna show up if canvas is not supported -->
+      <!-- the default size is 300x 150 -->
+    </canvas>
+    <script type="text/javascript">
+      const canvas = document.getElementById('drawing');
+      const context = canvas.getContext('2d');
+      // webgl or webgl2
+
+      context.moveTo(0, 0); // start at the top left corner
+      context.lineTo(canvas.width, canvas.height); //line to bottom right corner
+      context.stroke(); // draws line
+
+      context.fillStyle = 'rgba(0, 255, 200, 0.5)';   //not working
+      context.fillRect(100, 25, 200, 200); // x,y, width,height   //takes four arguments
+      context.clearRect(125, 50, 200, 200);
+      // context.fillStyle = 'rgba(0, 255, 200, 0.5)';    //not working idk why
+      context.strokeRect(150, 75, 200, 200);
+
+
+
+    </script>
+  </body>
+</html>

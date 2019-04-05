@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>drawing with path2d</title>
+    <style>
+        body{
+            margin:0;
+            display:flex;
+            height:100vh;
+            align-items: center;
+            justify-content: center;
+
+        }
+        
+    </style>
+</head>
+<body>
+    <canvas id="drawing" width="450" height="300"></canvas>
+    <div style = 'display:none'>
+        <img src="waterfall.png" alt="iceland waterfall">
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawing');
+        const context = canvas.getContext('2d');
+
+        let width;
+        let height;
+
+        //use imge from the DOM
+        let image = document.querySelector('img');
+
+
+        function setup() {
+            //fixed canvas size
+            width = canvas.width;
+            height = canvas.height;
+
+            // set the css display size
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+
+        // set the number of actual canvas pixels, scaled for screen resolution
+            let scale = window.devicePixelRatio;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            
+            //normalize the coordinate system
+            context.scale(scale, scale);
+
+        }
+
+        function draw(){ 
+            //draw image to the canvas (image, x, y, width, height)
+            context.drawImage(image, 0, 0, 450, 300);
+
+            //drawing with path2d
+            //create a path object
+
+            // let shield = new Path2D();
+            // shield.arc(width/2, height/2, 100, 0, Math.PI); //half a circle
+            // shield.lineTo(125, 50);
+            // shield.lineTo(325, 50);
+            // shield.closePath();
+
+            // // apply path as needed
+            // context.fill(shield);
+
+            // let path = new Path2D(
+            //     "M 20 40 L 100 20 L 175 125 L 120 180 z"
+            // );
+            // context.fillStyle ='hsla(0, 100%, 50%, 0.6)';
+            // context.fill(path);
+        };
+
+        setup();
+        // draw();
+        image.addEventListener('load',draw)     //bc of the timing aspect - need the page to load before drawing-
+                        // image needs to be completed loading - before drawing - 
+    </script>
+</body>
+</html>

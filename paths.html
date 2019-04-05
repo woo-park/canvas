@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Drawing Paths</title>
+    <style media="screen">
+      body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      canvas{
+        border:1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="drawing" width="450" height="300">
+      Fallback content can go here (i.e. img element)
+      <!-- only gonna show up if canvas is not supported -->
+      <!-- the default size is 300x 150 -->
+    </canvas>
+    <script type="text/javascript">
+      const canvas = document.getElementById('drawing');
+      const context = canvas.getContext('2d');
+      // webgl or webgl2
+      let gradient = context.createLinearGradient(100,50,350,250);
+      gradient.addColorStop(0,'orange');
+      gradient.addColorStop(1,'purple');
+
+      context.fillStyle = gradient;
+      context.fill();
+
+      context.strokeStyle = 'purple';
+      context.beginPath();
+      context.moveTo(225,40);
+      context.lineTo(100,255);
+      context.lineTo(350,250);
+      context.closePath();
+      context.stroke();   //this is where you actually draw the line  //this is primitive shape drawings
+
+      context.strokeStyle = 'green';
+      context.beginPath();
+      // x,y,radiusX, radiusY, rotation, startangle, endangle, counter clockwise(this is optional & default value of false);
+      context.ellipse(canvas.width/2, canvas.height/2, 100, 100, 0, 0, 2 * Math.PI, false); //takes several arguments -
+      context.stroke(); //closing path - to actually draw the ellipse //path is automatically closed when stroke() is drawn
+
+
+      context.fillStyle = 'rgba(255, 165, 0, 0.3)';
+
+      context.beginPath();
+      // x,y,r,start(radians),stop(radians),counterclockwise(optional)
+      context.arc(canvas.width/2,canvas.height/2,125,6,4);  // 6 and 4 are radiants- starting from 6 to 4?
+      context.stroke();
+
+    </script>
+  </body>
+</html>
