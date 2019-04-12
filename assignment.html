@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            margin:0;
+            display:flex;
+            height:100vh;
+            align-items:center;
+            justify-content:center;
+        }
+
+        canvas{
+            border:1px solid teal;
+        }
+
+
+    
+    </style>
+</head>
+<body>
+    <canvas id = "drawing" width = "450" height = "300"> canvas fall back</canvas>
+    <div>
+
+    </div>
+       
+
+
+
+    <script>
+        const canvas = document.getElementById('drawing');
+        const context = canvas.getContext('2d');
+
+        let width;
+        let height;
+
+        // let image = document.getElementById('pic');
+
+        function setup() {
+            width = canvas.width;
+            height = canvas.height;
+            console.log(width,height,'widthheight');
+
+            //set the css display size
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            console.log(canvas.style.width,'canvas.style.width');
+           
+            
+            let scale = window.devicePixelRatio;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            
+
+            context.scale(scale, scale);
+            console.log(canvas.width, canvas.height, 'canvas width and height');
+            console.log(scale,'scale');
+        }
+
+        function draw() {
+            let x = 25;
+            let y = 25;
+            let z = 1;
+
+            let spacing = 50;
+            let radius = 20;
+
+            for(let row = 0; row < height; row += spacing){
+                for(let col = 0; col < width; col += spacing){
+                    for(let z = 5; z < width; z += 20){     //interesting things happens when 3 for loops
+                        context.beginPath();
+                        context.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+                        context.stroke();
+                        x += spacing;
+                    }    
+                }
+              
+                x = 25;         // this sets the x value back to 25, the first line again after it being changed inside the for loop
+                y += spacing;   // everytime a horizontal line is finished drawn, comes out for loop and then add 50 to y pos, resetting the ypos
+            }
+            console.log('draw');
+
+            //four for loops
+            // for(let row = 0; row < height; row += spacing){
+            //     for(let col = 0; col < width; col += spacing){
+            //         for(let z = 5; z < width; z += 20){     //interesting things happen when 3 for loops
+            //             for(let w = 5; w < width; w += 15){ 
+            //                 context.beginPath();
+            //                 context.ellipse(x,y,z,w, 0, 0 , 2 * Math.PI);
+            //                 context.stroke();
+            //                 x += spacing;
+            //             }
+            //         }    
+            //     }
+              
+            //     x = 25;         // this sets the x value back to 25, the first line again after it being changed inside the for loop
+            //     y += spacing;   // everytime a horizontal line is finished drawn, comes out for loop and then add 50 to y pos, resetting the ypos
+            // }
+
+
+
+
+        }
+        
+        setup();
+        draw();
+        
+    </script>
+</body>
+</html>
