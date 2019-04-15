@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Web Is A Canvas</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+      canvas {background-color: lightgray;} /* change or remove this color */
+            
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+      }
+
+      #frame {
+        width: 1960px;
+        height: 400px;
+        margin: auto;
+        display: flex;
+        flex-shrink: 0;
+        justify-content: space-evenly;
+      }
+
+      canvas {
+        width: 600px;
+        height: 400px;
+      }
+
+      @media only screen and (min-width: 1040px) {
+        canvas {
+          width: 400px;
+          height: 400px;
+        }
+        
+      }
+    
+    </style>
+
+  </head>
+
+  <body>
+    <div id="frame">
+      <canvas id="canvas1" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video1" autoplay loop muted src="images/waves.mp4"></video>
+      </div>
+
+      <canvas id="canvas2" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video2" autoplay loop muted src="images/sunset.mp4"></video>
+      </div>
+
+      <canvas id="canvas3" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video3" autoplay loop muted src="images/fan.mp4"></video>
+      </div>
+    </div>
+
+   
+
+    <script>
+    // Three unique canvas drawings coded into the template provided (3 points)
+    // Drawing resolution should be scaled appropriately with the devicePixelRatio property (1 point)
+    // At least one custom shape drawn with path methods (1 point)
+    // At least one photographic image or video with pixel manipulation (2 points)
+    // Each drawing should be animated with the requestAnimationFrame() method (3 points)
+
+      const canvas = document.getElementsByClassName('canvas');
+      
+      // const context = canvas.getContext('2d'); 
+      const context1 = canvas[0].getContext('2d');
+      const context2 = canvas[1].getContext('2d');
+      const context3 = canvas[2].getContext('2d');
+
+      const video1 = document.getElementById('video1');
+      const video2 = document.getElementById('video2');
+      const video3 = document.getElementById('video3');
+      // console.log(video1,video2,video3, 'videos');  //returns videos
+
+      let width;
+      let height;
+
+      let pxScale = window.devicePixelRatio;    //returns 2
+
+      function setup() {
+        for(panel of canvas) {
+          width = panel.width;  //600
+          height = panel.height;  //400 
+
+          panel.style.width = width + 'px'; //css display width
+          panel.style.height = height + 'px'; //css display height
+
+          panel.width = width * pxScale;  //display pixels
+          panel.height = height * pxScale;
+          
+          panel.getContext('2d').scale(pxScale,pxScale);  //normalizing the coord, crisp enlarging
+
+          video1.play();
+          video2.play();
+          video3.play();
+        }
+      }
+
+      let imgScale = 10;
+      //pxScale = 2;
+      
+      function Template(context, video){
+        this.context = context.getContext('2d');
+        this.video = video;
+        console.log(this.context);
+
+        this.display = function(){
+          
+
+          context2.drawImage(video2, 0, 0, 800 / (imgScale * pxScale), 400 / (imgScale * pxScale));
+
+          //access video image data
+          let imageData = context2.getImageData(0, 0, width/imgScale, height/imgScale);  //grabbing data - in smaller unit
+          let data = imageData.data;
+
+          //clearing origin video
+          context2.clearRect(0, 0, width, height);
+
+          for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+              let index = (x + y * imageData.width) * 4; //getting all the index position
+              
+              let r = data[index + 0]; //red
+              let g = data[index + 1]; //green
+              let b = data[index + 2]; //blue
+              let a = data[index + 3]; //alpha
+
+              context2.fillStyle = `rgba(${r},${g},${b},1)`;
+
+              context2.save();
+              context2.translate(x * imgScale, y * imgScale);
+              context2.scale(0.2, 0.2);
+              let path = new Path2D("M 20 40 L 100 20 L 175 125 L 120 180 z");
+              context2.globalCompositeOperation = 'soft-light';
+              context2.fill(path);
+              context2.restore();
+
+            }
+          }
+
+          requestAnimationFrame(first_video.display);
+        }
+      }
+      
+
+      setup();
+      let first_video = new Template(canvas[0], video1);
+      first_video.display();
+
+      // video1.addEventListener('play', first_video.display);
+
+
+
+      //starting new from here
+
+  
+      
+    // //   let pic_scale = 10;
+    // //   let ratio = 10;
+      
+    // //   //canvas1    // use c1
+    // //   function drawCanvas1() {
+    // //     let video1_width = video1.videoWidth, video1_height = video1.videoHeight;
+    // //     // console.log('video_width and height',video1_width, video1_height);
+
+    // //     c1.drawImage(video1, 0, 0, video1_width/10 , video1_height/10 );  //dividing it by 20 //changed to 10//tbh idk why it works
+    // //     requestAnimationFrame(drawCanvas1);
+
+    // //     // grabbing video image data
+    // //     let imageData = c1.getImageData( 0, 0, width / (pic_scale ), height / (pic_scale ));
+    // //     // let imageData = context.getImageData(0, 0, width/imgScale, height/imgScale);
+    // //     let data = imageData.data;
+    // //     // after scaling the image small, get the data
+    // //     // console.log('data',data.length); 9600
+    // //     // console.log('imagedata height',imageData.height); 40 bc 400 /10
+    // //     // console.log('imagedata width',imageData.width);  60  bc 600 /10
+    // //       //40 * 60 = 2400 = 2400 cubics, but then there are 4 data index in each boxes
+    // //       // thus 9600 data.length
+        
+    // //     //create helperfunction
+
+    // //     /////
+    // //     //
+    // //     //
+    //     function Template(context, video, canvas) {
+    //       this.context = context;
+    //       this.video = video;
+    //       let video_width = video.videoWidth;
+    //       let video_height = video.videoHeight;
+    //       this.canvas = canvas;
+    //       let imageData = this.context.getImageData(0, 0, this.canvas.width/10, this.canvas.height/10);
+    //         let data = imageData.data;
+          
+            
+    //       this.logging = function () {
+    //         console.log(this.context,'context');
+    //         console.log(this.video,'video');
+    //         console.log(this.canvas,'canvas');
+    //         console.log(video_width,'vid width');
+    //         console.log(video_height,'vid height');
+    //         console.log(this.canvas.width,'canvas width');
+    //         console.log(this.canvas.height,'canvas height');
+    //         // console.log(imageData,'image data');
+    //         // console.log(data,'imgdata.data');
+    //       }
+      
+
+    //       this.display = function() {
+    //         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); //wait whats innerwidth here
+            
+    //         console.log(this.video,'thisthisthisvideo');
+    //         this.context.drawImage(this.video, 0, 0, video_width/20, video_height/20);
+            
+    //         for(let y = 0; y < imageData.height; y++) {
+    //           for(let x = 0; x < imageData.width; x++) {
+    //             let index = (x + y * imageData.width) * 4;
+
+    //             let r = data[index + 0]; //red
+    //             let g = data[index + 1]; //green
+    //             let b = data[index + 2]; //blue
+    //             let a = data[index + 3]; //alpha
+                
+    //             this.context.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+    //             // this.context.beginPath();
+    //             // this.context.fillRect(x * 10 , y * 10, 10 , 10 );
+    //             // this.context.fill();
+    //             this.context.beginPath();
+            
+    //         this.context.arc(x * 10, y * 10, 10/ 2, 0 , Math.PI * 2);
+    //         // context.fillRect(x * imgScale, y * imgScale, imgScale,imgScale); //doesn't work my practics
+    //         this.context.fill();
+    //           }
+    //         }
+    //       }
+    //     } //end of class template
+        
+    //     // let video_array = [];
+    //     // for(let i = 0; i < 5; i++) {
+    //     //     video_array.push(new Template(c1, video1, canvas[0]));
+    //     //     video_array.push(new Template(c2, video2, canvas[1]));
+    //     //     video_array.push(new Template(c3, video3, canvas[2]));
+    //     // }
+
+    //     function drawAnimate() {
+          
+    //       let play = new Template(c1, video1, canvas[0]);
+    //       play.logging();
+    //       play.display();
+          
+    //     //   for (let i = 0; i < video_array.length; i++) {
+    //     //       video_array[i].display();
+    //     //   }
+
+    //         requestAnimationFrame(drawAnimate);
+    //     }   //end of function draw
+
+    //     // drawAnimate();
+
+    //   console.log(video1.videoWidth);
+    //   setup();
+
+    //   video1.addEventListener('play', drawAnimate);
+      
+
+    // //   video2.addEventListener('play', drawAnimate);
+
+    
+    // //   video3.addEventListener('play', drawAnimate);
+
+      
+
+      
+
+    // //     //
+    // //     //
+    // //     ////
+    // //     c1.clearRect(0, 0, width, height);
+        
+    // //     for (let y = 0; y < imageData.height; y++) {
+    // //       for (let x = 0; x < imageData.width; x++) {
+    // //         let index = (x + y * imageData.width) * 4;
+
+
+    // //         let r = data[index + 0]; //red
+    // //         let g = data[index + 1]; //green
+    // //         let b = data[index + 2]; //blue
+    // //         let a = data[index + 3]; //alpha
+
+    // //         // canvas[0].addEventListener('mouseover', ()=>{ 
+
+    // //         c1.fillStyle = `rgba(${r},${g},${b},1)`;
+            
+    // //         c1.beginPath();
+    // //         // c1.arc(x * 2* pic_scale , y * 2* pic_scale , pic_scale , 0 , Math.PI * 2);
+    // //         // c1.fillRect(x * 20,y *20,19,20);    //works   //might be interesting to have noise on background with border sipping inside
+    // //         c1.fillRect(x * ratio *2  ,y *ratio *2 ,ratio *2, ratio* 2);  
+    // //         //corresponds to c1.drawImage
+    // //         c1.fill();
+            
+    // //         // });
+    // //       }
+    // //     }
+    // //   } //end of drawCanvas1 function
+
+
+      
+    // //   video1.addEventListener('play', drawCanvas1);
+
+      
+      
+      
+
+    
+    //   //end of canvas1`
+
+
+
+
+
+    // //   //canvas2 && use c2
+    // //   function drawCanvas2() {
+    // //     let video2_width = video2.videoWidth, video2_height = video2.videoHeight;
+    // //     // console.log('video_width and height',video2_width, video2_height);
+
+
+    // //     c2.drawImage(video2, 0, 0, video2_width, video2_height);
+    // //     requestAnimationFrame(drawCanvas2);
+    // //   }
+    // //   video2.addEventListener('play', drawCanvas2);
+
+
+
+
+
+
+    // //   // canvas3   // use c3
+    // //   function drawCanvas3() {
+    // //     let video3_width = video3.videoWidth, video3_height = video3.videoHeight;
+    // //     // console.log('video_width and height',video3_width, video3_height);
+
+
+    // //     c3.drawImage(video3, 0, 0, video3_width, video3_height);
+    // //     requestAnimationFrame(drawCanvas3);
+    // //   }
+    // //   video3.addEventListener('play', drawCanvas3);
+    
+    
+
+    function draw() {
+        let x = 25;
+        let y = 25;
+        let z = 1;
+
+        let spacing = 50;
+        let radius = 20;
+
+          for(let row = 0; row < height; row += spacing){
+            for(let col = 0; col < width; col += spacing){
+              for(let z = 5; z < width; z += 20){     //interesting things happens when 3 for loops
+                context1.beginPath();
+                context2.beginPath();
+                context3.beginPath();
+
+                context1.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+              
+               
+                context2.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+             
+                
+                context3.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+                context1.stroke();
+                context2.stroke();
+                context3.stroke();
+                
+                x += spacing;
+               }    
+            }
+            x = 25;         // this sets the x value back to 25, the first line again after it being changed inside the for loop
+            y += spacing;   // everytime a horizontal line is finished drawn, comes out for loop and then add 50 to y pos, resetting the ypos
+          }
+        console.log('draw');
+      }
+      
+      draw();
+
+
+        //   function setup() {
+    //     for(each of canvas){
+    //       //fixing 3 canvas sizes
+    //       width = each.width;   //600 width
+    //       height = each.height; //400 height
+
+    //       //setting css display size
+    //       each.style.width = width + 'px';  
+    //       each.style.height = height + 'px';
+
+    //       //setting # of display pixels
+    //       each.width = width * pxScale;
+    //       each.height = height * pxScale; //makes it better resolution
+
+          
+    //       //scale it back - making it 2 larger
+    //       //should i normalize the cordinate system?
+    //       // c1.scale(2, 2);
+    //       // c2.scale(pxScale, pxScale);
+    //       // c3.scale(pxScale, pxScale); //not working for some reason
+    //     }
+    //     video1.play();
+    //     video2.play();
+    //     video3.play();
+    //   }
+    
+    </script>
+  </body>
+</html>
+
