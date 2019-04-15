@@ -40,7 +40,9 @@
       let pxScale = window.devicePixelRatio;
 
       let video = document.querySelector('video');
-
+      console.log(video.videoWidth);
+      console.log(video,'video');
+     
 
       function setup() {
         // fixed canvas size
@@ -76,6 +78,9 @@
         // access video image data
         let imageData = context.getImageData(0, 0, width/imgScale, height/imgScale);
         let data = imageData.data;
+
+        // console.log(imageData,'image data');
+      // console.log(data,'imgdata.data');
 
         // clear original video
         context.clearRect(0, 0, width, height);

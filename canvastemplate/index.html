@@ -29,7 +29,7 @@
         height: 400px;
       }
 
-      @media only screen and (max-width: 1400px) {
+      @media only screen and (min-width: 1040px) {
         canvas {
           width: 400px;
           height: 400px;
@@ -79,7 +79,9 @@
       let video1 = document.getElementById('video1');
       let video2 = document.getElementById('video2');
       let video3 = document.getElementById('video3');
+      console.log('c1 context',c1);
 
+      
       function setup() {
         for(each of canvas){
           //fixing 3 canvas sizes
@@ -92,10 +94,14 @@
 
           //setting # of display pixels
           each.width = width * pxScale;
-          each.height = height * pxScale;
+          each.height = height * pxScale; //makes it better resolution
 
+          
           //scale it back - making it 2 larger
-          // each.scale(pxScale, pxScale);
+          //should i normalize the cordinate system?
+          // c1.scale(2, 2);
+          // c2.scale(pxScale, pxScale);
+          // c3.scale(pxScale, pxScale); //not working for some reason
         }
         video1.play();
         video2.play();
@@ -111,7 +117,7 @@
         let video1_width = video1.videoWidth, video1_height = video1.videoHeight;
         // console.log('video_width and height',video1_width, video1_height);
 
-        c1.drawImage(video1, 0, 0, video1_width/ratio , video1_height/ratio );  //dividing it by 20 //changed to 10//tbh idk why it works
+        c1.drawImage(video1, 0, 0, video1_width/10 , video1_height/10 );  //dividing it by 20 //changed to 10//tbh idk why it works
         requestAnimationFrame(drawCanvas1);
 
         // grabbing video image data
@@ -125,6 +131,59 @@
           //40 * 60 = 2400 = 2400 cubics, but then there are 4 data index in each boxes
           // thus 9600 data.length
         
+        //create helperfunction
+
+        /////
+        //
+        //
+        function Template(context,video,canvas) {
+          this.context = context;
+          this.video = video;
+          this.video_width = video.videoWidth;
+          this.video_height = video.videoHeight;
+          this.canvas = canvas;
+
+          let imageData = this.context.getImageData( 0, 0, this.canvas.width/10, this.canvas.height/10);
+          let data = imageData.data;
+          
+          let r, g, b, a;
+
+          this.display = function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); //wait whats innerwidth here
+            
+            this.context.drawImage(this.video, 0, 0, video_width/10, video_height/10);
+
+            for(let y = 0; y < imageData.height; y++) {
+              for(let x = 0; y < imageData.width; x++) {
+                let index = (x + y * imageData.width) * 4;
+
+                let r = data[index + 0]; //red
+                let g = data[index + 1]; //green
+                let b = data[index + 2]; //blue
+                let a = data[index + 3]; //alpha
+                
+                this.context.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+                this.context.beginPath();
+                this.context.fillRect(x * ratio * 2, y * ratio * 2, ratio * 2, ratio * 2);
+                this.context.fill();
+              }
+            }
+          }
+        } //end of class template
+
+        let video_array = [];
+        for(let i = 0; i < 100; i++) {
+          video_array.push(new Template());
+        }
+        function drawAnimate() {
+          requestAnimationFrame(drawAnimate);
+        }
+
+        drawAnimate();
+
+        //
+        //
+        ////
         c1.clearRect(0, 0, width, height);
         
         for (let y = 0; y < imageData.height; y++) {
@@ -144,7 +203,7 @@
             c1.beginPath();
             // c1.arc(x * 2* pic_scale , y * 2* pic_scale , pic_scale , 0 , Math.PI * 2);
             // c1.fillRect(x * 20,y *20,19,20);    //works   //might be interesting to have noise on background with border sipping inside
-            c1.fillRect(x * ratio*2,y *ratio*2,ratio*2,ratio*2);  
+            c1.fillRect(x * ratio *2  ,y *ratio *2 ,ratio *2, ratio* 2);  
             //corresponds to c1.drawImage
             c1.fill();
             
