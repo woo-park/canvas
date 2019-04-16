@@ -131,8 +131,9 @@
 
               //clearing origin video
               // context.clearRect(0, 0, width, height);
-
-              for (let y = 0; y < imageData.height; y +=1) {
+              console.log(imageData.height, 'height'); //20
+              console.log(imageData.width, 'width');   //30
+              for (let y = 10; y < imageData.height; y +=1) {
                 for (let x = 0; x < imageData.width; x +=1 ) {
                   let index = (x + y * imageData.width) * 4; //getting all the index position
                   
@@ -147,9 +148,11 @@
                   // context.save();
                   // context.translate(x * imgScale, y * imgScale);
                   // context.scale(0.2, 0.2);
+                  // // let path2 = new Path2D("M20,230 Q40,205 50,230 T90,230"); 
                   // let path = new Path2D("M 20 40 L 100 20 L 175 125 L 120 180 z");
                   // context.globalCompositeOperation = 'soft-light';
                   // context.fill(path);
+                  // // context.fill(path2);
                   // context.restore();
 
                   //circle
@@ -169,7 +172,7 @@
                   
 
                     
-                  //circle, ellipse, shape drawn on top of pixels //imgScale = 10;
+                  // circle, ellipse, shape drawn on top of pixels //imgScale = 10;
                   context.beginPath();
                   context.save();
                   // context.translate(imgScale/2, imgScale/2); 
@@ -195,6 +198,53 @@
                 }
               } //end of for loop
 
+              for (let y = 0; y < imageData.height/2; y +=1) {
+                for (let x = 0; x < imageData.width/2; x +=1 ) {
+                  let index = (x + y * imageData.width) * 4; //getting all the index position
+                  
+                  let r = data[index + 0]; //red
+                  let g = data[index + 1]; //green
+                  let b = data[index + 2]; //blue
+                  let a = data[index + 3]; //alpha
+
+                  context.fillStyle = `rgba(${r},${g},${b},1)`;
+
+                  //custom shape but lags
+                  // context.save();
+                  // context.translate(x * imgScale, y * imgScale);
+                  // context.scale(0.2, 0.2);
+                  // // let path2 = new Path2D("M20,230 Q40,205 50,230 T90,230"); 
+                  // let path = new Path2D("M 20 40 L 100 20 L 175 125 L 120 180 z");
+                  // context.globalCompositeOperation = 'soft-light';
+                  // context.fill(path);
+                  // // context.fill(path2);
+                  // context.restore();
+
+                  // circle
+                  context.save();
+                  context.translate(imgScale/2, imgScale/2);    // to center it in the frame imgScale/2 is 5;
+                  context.beginPath();
+                  context.arc(x * imgScale, y * imgScale, imgScale/ 1.5, 0 , Math.PI * 2);
+                  context.fill();
+                  context.restore();
+
+                  // square
+                  // context.save();
+                  // context.beginPath();
+                  // context.fillRect(x * imgScale, y * imgScale, imgScale, imgScale);   //wth
+                  // context.fill();
+                  // context.restore();
+                  
+
+                    
+                 
+                
+
+                  
+
+                }
+              } //end of second for loop
+
 
               
             }
@@ -203,10 +253,16 @@
           // requestAnimationFrame(first_video.display);
           // requestAnimationFrame(second_video.display);  //works but its so slow
           // requestAnimationFrame(this.display); //doesn't work bc 'this' points to window
+        } //end of this.display method;
+
+        this.update = function(){
+
+
+
         }
 
         console.log(this.display,'this dot display');
-      }
+      } //end of template
 
       
 

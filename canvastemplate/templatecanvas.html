@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Web Is A Canvas</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+      canvas {background-color: lightgray;} /* change or remove this color */
+            
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+      }
+      #frame {
+        width: 1960px;
+        height: 400px;
+        margin: auto;
+        display: flex;
+        flex-shrink: 0;
+        justify-content: space-evenly;
+      }
+      canvas {
+        width: 600px;
+        height: 400px;
+      }
+      @media only screen and (min-width: 1040px) {
+        canvas {
+          width: 400px;
+          height: 400px;
+        }
+        
+      }
+    
+    </style>
+
+  </head>
+
+  <body>
+    <div id="frame">
+      <canvas id="canvas1" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video1" autoplay loop muted src="images/sonspot.mp4"></video>
+      </div>
+
+      <canvas id="canvas2" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video2" autoplay loop muted src="images/fan.mp4"></video>
+      </div>
+
+      <canvas id="canvas3" class="canvas" width="600" height="400"></canvas>
+
+      <div style="display: none">
+          <video id="video3" autoplay loop muted src="images/spot1.mp4"></video>
+      </div>
+    </div>
+
+   
+
+    <script>
+    // Three unique canvas drawings coded into the template provided (3 points)
+    // Drawing resolution should be scaled appropriately with the devicePixelRatio property (1 point)
+    // At least one custom shape drawn with path methods (1 point)
+    // At least one photographic image or video with pixel manipulation (2 points)
+    // Each drawing should be animated with the requestAnimationFrame() method (3 points)
+      const canvas = document.getElementsByClassName('canvas');
+      
+      // const context = canvas.getContext('2d'); 
+      const context1 = canvas[0].getContext('2d');
+      const context2 = canvas[1].getContext('2d');
+      const context3 = canvas[2].getContext('2d');
+      const video1 = document.getElementById('video1');
+      const video2 = document.getElementById('video2');
+      const video3 = document.getElementById('video3');
+      // console.log(video1,video2,video3, 'videos');  //returns videos
+      let width;
+      let height;
+      let pxScale = window.devicePixelRatio;    //returns 2
+      function setup() {
+        for(panel of canvas) {
+          width = panel.width;  //600
+          height = panel.height;  //400 
+          panel.style.width = width + 'px'; //css display width
+          panel.style.height = height + 'px'; //css display height
+          panel.width = width * pxScale;  //display pixels
+          panel.height = height * pxScale;
+          
+          panel.getContext('2d').scale(pxScale,pxScale);  //normalizing the coord, crisp enlarging
+          video1.play();
+          video2.play();
+          video3.play();
+        }
+      }
+      let imgScale = 20;
+      //pxScale = 2;
+      let toggle = false;
+      
+      function Template(sample, video){
+        // this.context = context.getContext('2d');
+        // this.video = video;
+        // console.log(this.context);
+        let context = sample;
+        let vid = video;
+        
+        this.display = function(){
+          toggle = !toggle;
+          if(toggle) {
+              context.drawImage(vid, 0, 0, 800 / (imgScale * pxScale), 400 / (imgScale * pxScale));
+              //access video image data
+              let imageData = context.getImageData(0, 0, width/imgScale, height/imgScale);  //grabbing data - in smaller unit
+              let data = imageData.data;
+              //clearing origin video
+              // context.clearRect(0, 0, width, height);
+              for (let y = 0; y < imageData.height; y +=1) {
+                for (let x = 0; x < imageData.width; x +=1 ) {
+                  let index = (x + y * imageData.width) * 4; //getting all the index position
+                  
+                  let r = data[index + 0]; //red
+                  let g = data[index + 1]; //green
+                  let b = data[index + 2]; //blue
+                  let a = data[index + 3]; //alpha
+                  context.fillStyle = `rgba(${r},${g},${b},1)`;
+                  //custom shape but lags
+                  // context.save();
+                  // context.translate(x * imgScale, y * imgScale);
+                  // context.scale(0.2, 0.2);
+                  // let path = new Path2D("M 20 40 L 100 20 L 175 125 L 120 180 z");
+                  // context.globalCompositeOperation = 'soft-light';
+                  // context.fill(path);
+                  // context.restore();
+                  //circle
+                  // context.save();
+                  // context.translate(imgScale/2, imgScale/2);    // to center it in the frame imgScale/2 is 5;
+                  // context.beginPath();
+                  // context.arc(x * imgScale, y * imgScale, imgScale/ 2, 0 , Math.PI * 2);
+                  // context.fill();
+                  // context.restore();
+                  //square
+                  // context.save();
+                  // context.beginPath();
+                  // context.fillRect(x * imgScale, y * imgScale, imgScale, imgScale);   //wth
+                  // context.fill();
+                  // context.restore();
+                  
+                    
+                  //circle, ellipse, shape drawn on top of pixels //imgScale = 10;
+                  context.beginPath();
+                  context.save();
+                  // context.translate(imgScale/2, imgScale/2); 
+                  context.ellipse(x * imgScale,y * imgScale,5,5,0,0, 2*Math.PI);
+                  context.stroke();
+                  context.restore();
+                  context.fillRect(x * imgScale, y * imgScale, imgScale, imgScale);   //wth
+                  context.fill();
+                  // random shape drawn on top of it with imgScale of 20
+                  context.beginPath();
+                  context.save();
+                  // context.translate(imgScale/4, imgScale/4); 
+                  context.ellipse(x * imgScale,y * imgScale,3,10,0,0, 2*Math.PI);
+                  context.stroke();
+                  context.restore();
+                  context.fillRect(x * imgScale, y * imgScale, imgScale, imgScale);   //wth
+                  context.fill();
+                  
+                  
+                }
+              } //end of for loop
+              
+            }
+          
+          // requestAnimationFrame(run);
+          // requestAnimationFrame(first_video.display);
+          // requestAnimationFrame(second_video.display);  //works but its so slow
+          // requestAnimationFrame(this.display); //doesn't work bc 'this' points to window
+        }
+        console.log(this.display,'this dot display');
+      }
+      
+      setup();
+      // let first_video = new Template(context2, video3);
+      // first_video.display();
+      // let second_video = new Template(context3, video2);
+      // second_video.display();
+      // function run(){
+      //   second_video.display();
+      //   first_video.display();
+      // }
+      // run();
+      
+      //ideally - like this
+        // video1.addEventListener('play', first_video.display);
+      
+        //finally works my lord
+    let video_array = [];
+    for(let i = 0; i < 3; i++) {
+        video_array.push(new Template(context1, video1));
+        video_array.push(new Template(context2, video2));
+        video_array.push(new Template(context3, video3));
+    }
+    function beginDraw() {
+      for (let i = 0; i < video_array.length; i++) {
+          video_array[i].display();
+      }
+        requestAnimationFrame(beginDraw);
+    }   //end of beginDraw function
+    beginDraw();
+    
+    function draw() {
+        let x = 25;
+        let y = 25;
+        let z = 1;
+        let spacing = 50;
+        let radius = 20;
+          for(let row = 0; row < height; row += spacing){
+            for(let col = 0; col < width; col += spacing){
+              for(let z = 5; z < width; z += 20){     //interesting things happens when 3 for loops
+                context1.beginPath();
+                context2.beginPath();
+                context3.beginPath();
+                context1.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+              
+               
+                context2.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+             
+                
+                context3.ellipse(x,y,radius,z, 0, 0 , 2 * Math.PI);
+                context1.stroke();
+                context2.stroke();
+                context3.stroke();
+                
+                x += spacing;
+               }    
+            }
+            x = 25;         // this sets the x value back to 25, the first line again after it being changed inside the for loop
+            y += spacing;   // everytime a horizontal line is finished drawn, comes out for loop and then add 50 to y pos, resetting the ypos
+          }
+        console.log('draw');
+      }
+      
+      // draw();
+    </script>
+  </body>
+</html>
